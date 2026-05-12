@@ -53,7 +53,7 @@ function MenuImage({ src, alt, className }) {
 /* ─── Logo ────────────────────────────────────────────────────── */
 function LogoMark({ logoUrl, restaurantName }) {
   if (logoUrl) {
-    return <img src={logoUrl} alt={restaurantName} className="h-11 w-11 rounded-full object-cover" />
+    return <img src={logoUrl} alt="PalavuCentre logo" className="h-11 w-11 rounded-full object-cover" />
   }
   return (
     <div className="flex h-8 w-8 items-center justify-center rounded-[8px] bg-[#F0A500] text-[13px] font-bold text-black">
@@ -483,6 +483,7 @@ function StickyCheckoutBar({ cartItems, onCheckout }) {
 export default function MenuPage() {
   const navigate = useNavigate()
   const searchInputRef = useRef(null)
+  const contentContainerRef = useRef(null)
   const sectionRefs = useRef({})
   const { siteSettings } = useSiteSettings()
   const { isAuthenticated, user } = useAccount()
@@ -620,12 +621,28 @@ export default function MenuPage() {
 
   const getItemQuantity = (id) => cartItems.find((i) => i.id === id)?.quantity || 0
   const handleUpdateQuantity = (item, next) => updateQuantity(item.id, Math.max(0, next))
+  const scrollContentToTop = () => {
+    contentContainerRef.current?.scrollIntoView({ behavior: 'instant', block: 'start' })
+  }
+  const updateDietFilter = (nextFilter) => {
+    setDietFilter(nextFilter)
+    scrollContentToTop()
+  }
+  const updateCategoryFilter = (nextFilter) => {
+    setCategoryFilter(nextFilter)
+    scrollContentToTop()
+  }
   const scrollToCategory = (slug) => {
     setActiveSidebarSlug(slug)
     setCategoryFilter('all')
     sectionRefs.current[slug]?.scrollIntoView({ behavior: 'smooth', block: 'start' })
   }
-  const handleClearFilters = () => { setSearch(''); setDietFilter('all'); setCategoryFilter('all') }
+  const handleClearFilters = () => {
+    setSearch('')
+    setDietFilter('all')
+    setCategoryFilter('all')
+    scrollContentToTop()
+  }
 
   return (
     /* pb-[80px] so last items aren't hidden behind sticky checkout bar */
@@ -701,14 +718,14 @@ export default function MenuPage() {
             >
               <FilterChip
                 active={dietFilter === 'veg'}
-                onClick={() => setDietFilter(dietFilter === 'veg' ? 'all' : 'veg')}
+                onClick={() => updateDietFilter(dietFilter === 'veg' ? 'all' : 'veg')}
                 dotColor="#4CAF50"
               >
                 Veg
               </FilterChip>
               <FilterChip
                 active={dietFilter === 'nonveg'}
-                onClick={() => setDietFilter(dietFilter === 'nonveg' ? 'all' : 'nonveg')}
+                onClick={() => updateDietFilter(dietFilter === 'nonveg' ? 'all' : 'nonveg')}
                 dotColor="#FF4444"
               >
                 Non-Veg
@@ -717,7 +734,7 @@ export default function MenuPage() {
                 <FilterChip
                   key={cat.slug}
                   active={categoryFilter === cat.slug}
-                  onClick={() => setCategoryFilter(categoryFilter === cat.slug ? 'all' : cat.slug)}
+                  onClick={() => updateCategoryFilter(categoryFilter === cat.slug ? 'all' : cat.slug)}
                 >
                   {cat.name}
                 </FilterChip>
@@ -742,7 +759,7 @@ export default function MenuPage() {
         <div className="grid gap-6 lg:grid-cols-[240px_minmax(0,1fr)]">
           <MenuSidebar categories={categoryEntries} activeSlug={activeSidebarSlug} onSelect={scrollToCategory} />
 
-          <div className="min-w-0 space-y-10">
+          <div ref={contentContainerRef} className="min-w-0 space-y-10">
 
             {/* Popular picks */}
             {!isLoading && !error && !hasActiveFilters && popularItems.length > 0 && (

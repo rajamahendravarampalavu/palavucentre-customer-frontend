@@ -4,6 +4,7 @@ import { CartProvider } from './context/CartContext'
 import Navbar from './components/Navbar'
 import Footer from './components/Footer'
 import WhatsAppButton from './components/WhatsAppButton'
+import ScrollToTop from './components/ScrollToTop.tsx'
 import { useAccount } from './context/AccountContext'
 import Home from './pages/Home'
 import MenuPage from './pages/MenuPage'
@@ -43,6 +44,7 @@ function AppContent() {
 
   return (
     <div className="min-h-screen bg-bg-page text-text-primary flex flex-col">
+      <ScrollToTop />
       {showPublicShell && <Navbar />}
       {showPublicShell && <CartDrawer />}
       {showPublicShell && showCartBar && <CartBar />}

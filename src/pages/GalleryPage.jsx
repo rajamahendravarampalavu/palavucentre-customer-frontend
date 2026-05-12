@@ -1,7 +1,11 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { ChevronLeft, ChevronRight, X } from 'lucide-react'
 
 import { publicApi } from '../lib/api'
+
+function getGalleryAlt(image) {
+  return image?.caption || image?.altText || image?.title || 'Gallery photo'
+}
 
 export default function GalleryPage() {
   const [filter, setFilter] = useState('all')
@@ -9,6 +13,7 @@ export default function GalleryPage() {
   const [galleryImages, setGalleryImages] = useState([])
   const [isLoading, setIsLoading] = useState(true)
   const [error, setError] = useState('')
+  const touchStartYRef = useRef(null)
 
   useEffect(() => {
     let isMounted = true
@@ -47,6 +52,10 @@ export default function GalleryPage() {
     setLightbox(filtered.findIndex((item) => item.id === img.id))
   }
 
+  const closeLightbox = () => {
+    setLightbox(null)
+  }
+
   const navigate = (direction) => {
     setLightbox((current) => {
       const next = current + direction
@@ -54,6 +63,45 @@ export default function GalleryPage() {
       if (next >= filtered.length) return 0
       return next
     })
+  }
+
+  useEffect(() => {
+    const handleKeyDown = (event) => {
+      if (event.key === 'Escape') {
+        closeLightbox()
+      }
+    }
+
+    window.addEventListener('keydown', handleKeyDown, true)
+    document.addEventListener('keydown', handleKeyDown, true)
+    return () => {
+      window.removeEventListener('keydown', handleKeyDown, true)
+      document.removeEventListener('keydown', handleKeyDown, true)
+    }
+  }, [])
+
+  const handleBackdropClick = (event) => {
+    if (event.target === event.currentTarget) {
+      closeLightbox()
+    }
+  }
+
+  const handleTouchStart = (event) => {
+    touchStartYRef.current = event.touches?.[0]?.clientY ?? null
+  }
+
+  const handleTouchEnd = (event) => {
+    const startY = touchStartYRef.current
+    touchStartYRef.current = null
+
+    if (startY === null) {
+      return
+    }
+
+    const endY = event.changedTouches?.[0]?.clientY ?? startY
+    if (endY - startY > 80) {
+      closeLightbox()
+    }
   }
 
   return (
@@ -90,8 +138,8 @@ export default function GalleryPage() {
                   onClick={() => openLightbox(img)}
                   className="break-inside-avoid cursor-pointer group relative overflow-hidden rounded-lg"
                 >
-                  <img src={img.url} alt={img.altText || img.title || 'Gallery'} className="w-full rounded-lg transition transform group-hover:scale-110" loading="lazy" />
-                  <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition flex items-center justify-center">
+                  <img src={img.url} alt={getGalleryAlt(img)} className="w-full rounded-lg transition transform group-hover:scale-110" loading="lazy" />
+                  <div className="pointer-events-none absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition flex items-center justify-center">
                     <span className="text-gold text-4xl">+</span>
                   </div>
                 </div>
@@ -102,17 +150,51 @@ export default function GalleryPage() {
       </div>
 
       {lightbox !== null && filtered[lightbox] && (
-        <div className="fixed inset-0 bg-black/95 z-50 flex items-center justify-center p-4">
-          <button onClick={() => setLightbox(null)} className="absolute top-4 right-4 text-white hover:text-gold">
-            <X className="w-8 h-8" />
+        <div
+          className="fixed inset-0 z-[9990] flex items-center justify-center bg-black/95 p-4"
+          onClick={handleBackdropClick}
+          onTouchStart={handleTouchStart}
+          onTouchEnd={handleTouchEnd}
+        >
+          <button
+            type="button"
+            onClick={(event) => {
+              event.stopPropagation()
+              closeLightbox()
+            }}
+            className="fixed right-4 top-4 z-[9999] flex h-11 min-h-[44px] w-11 min-w-[44px] items-center justify-center rounded-full border border-white/15 bg-black/60 text-white transition hover:bg-black/80"
+            aria-label="Close gallery photo"
+          >
+            <X className="h-6 w-6" />
           </button>
-          <button onClick={() => navigate(-1)} className="absolute left-4 text-white hover:text-gold">
-            <ChevronLeft className="w-12 h-12" />
+          <button
+            type="button"
+            onClick={(event) => {
+              event.stopPropagation()
+              navigate(-1)
+            }}
+            className="fixed left-4 top-1/2 z-[9998] flex h-11 min-h-[44px] w-11 min-w-[44px] -translate-y-1/2 items-center justify-center rounded-full bg-black/60 text-white transition hover:bg-black/80 hover:text-gold md:h-14 md:w-14"
+            aria-label="Previous gallery photo"
+          >
+            <ChevronLeft className="h-7 w-7 md:h-10 md:w-10" />
           </button>
-          <button onClick={() => navigate(1)} className="absolute right-4 text-white hover:text-gold">
-            <ChevronRight className="w-12 h-12" />
+          <button
+            type="button"
+            onClick={(event) => {
+              event.stopPropagation()
+              navigate(1)
+            }}
+            className="fixed right-4 top-1/2 z-[9998] flex h-11 min-h-[44px] w-11 min-w-[44px] -translate-y-1/2 items-center justify-center rounded-full bg-black/60 text-white transition hover:bg-black/80 hover:text-gold md:h-14 md:w-14"
+            aria-label="Next gallery photo"
+          >
+            <ChevronRight className="h-7 w-7 md:h-10 md:w-10" />
           </button>
-          <img src={filtered[lightbox].url} alt={filtered[lightbox].altText || filtered[lightbox].title || 'Gallery'} className="max-w-full max-h-full object-contain" />
+          <img
+            src={filtered[lightbox].url}
+            alt={getGalleryAlt(filtered[lightbox])}
+            className="max-h-full max-w-full object-contain"
+            onClick={(event) => event.stopPropagation()}
+          />
         </div>
       )}
     </div>

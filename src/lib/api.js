@@ -70,7 +70,9 @@ async function withPublicFallback(request, fallbackData, label, fallbackMeta = {
       throw requestError
     }
 
-    console.warn(`[publicApi] Falling back to local ${label} data because the backend is unavailable.`, requestError)
+    if (import.meta.env.DEV) {
+      console.warn(`[publicApi] Falling back to local ${label} data because the backend is unavailable.`, requestError)
+    }
     return {
       success: true,
       data: fallbackData,
@@ -118,7 +120,7 @@ export const publicApi = {
       fallbackSiteSettings,
       'site settings',
     ),
-  submitContact: (body) => apiRequest('/contact', { method: 'POST', body }),
+  submitContact: (body) => apiRequest('/inquiries', { method: 'POST', body }),
   submitFranchise: (body) => apiRequest('/franchise', { method: 'POST', body }),
   submitCatering: (body) => apiRequest('/catering', { method: 'POST', body }),
   createOrder: (body) => apiRequest('/orders', { method: 'POST', body }),

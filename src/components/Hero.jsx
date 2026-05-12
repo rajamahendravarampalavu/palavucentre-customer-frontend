@@ -5,7 +5,7 @@ export default function Hero() {
       <div className="absolute inset-0 z-0">
         <img 
           src="https://images.unsplash.com/photo-1585937421612-70a008356fbe?w=1920&q=80" 
-          alt="Traditional South Indian cuisine"
+          alt="PalavuCentre restaurant"
           className="w-full h-full object-cover"
         />
         <div className="absolute inset-0 hero-gradient"></div>

@@ -40,7 +40,7 @@ export function AccountProvider({ children }) {
       setUser(response.data.user)
       return response.data.user
     } catch (requestError) {
-      if (requestError.status !== 401) {
+      if (requestError.status !== 401 && import.meta.env.DEV) {
         console.warn('[account] Could not hydrate account session.', requestError)
       }
 
@@ -63,7 +63,7 @@ export function AccountProvider({ children }) {
     }
 
     refreshProfile().catch((requestError) => {
-      if (requestError.status !== 401) {
+      if (requestError.status !== 401 && import.meta.env.DEV) {
         console.warn('[account] Could not load account profile.', requestError)
       }
     })

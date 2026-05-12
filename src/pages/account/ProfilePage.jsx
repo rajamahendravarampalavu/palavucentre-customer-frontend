@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import {
   CalendarDays,
   CheckCircle2,
@@ -164,6 +164,7 @@ export default function ProfilePage() {
   const { addToCart, setCartOpen } = useCart()
   const location = useLocation()
   const [searchParams, setSearchParams] = useSearchParams()
+  const tabContentRef = useRef(null)
   const [addressForm, setAddressForm] = useState(initialAddressForm)
   const [editingAddressId, setEditingAddressId] = useState(null)
   const [addressError, setAddressError] = useState('')
@@ -200,7 +201,10 @@ export default function ProfilePage() {
     return () => window.clearTimeout(t)
   }, [dashboardNotice])
 
-  const setActiveTab = (tab) => setSearchParams({ tab })
+  const setActiveTab = (tab) => {
+    setSearchParams({ tab })
+    tabContentRef.current?.scrollIntoView({ behavior: 'instant', block: 'start' })
+  }
   const resetAddressForm = () => { setEditingAddressId(null); setAddressForm(initialAddressForm); setShowAddressForm(false) }
 
   const handleAddressChange = (e) => {
@@ -319,7 +323,7 @@ export default function ProfilePage() {
         {isProfileLoading && <p className="mt-2 text-center text-[11px] text-[#A8977E]/50">Refreshing...</p>}
 
         {/* Tab content */}
-        <div className="mt-4" key={activeTab}>
+        <div ref={tabContentRef} className="mt-4" key={activeTab}>
 
           {/* OVERVIEW TAB */}
           {activeTab === 'overview' && (

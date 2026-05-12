@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 
 const galleryImages = [
   { id: 1, url: 'https://images.unsplash.com/photo-1585937421612-70a008356fbe?w=800', alt: 'Traditional South Indian thali' },
@@ -13,6 +13,42 @@ const galleryImages = [
 
 export default function Gallery() {
   const [lightbox, setLightbox] = useState(null)
+  const touchStartYRef = useRef(null)
+
+  const closeLightbox = () => setLightbox(null)
+
+  useEffect(() => {
+    const handleKeyDown = (event) => {
+      if (event.key === 'Escape') {
+        closeLightbox()
+      }
+    }
+
+    window.addEventListener('keydown', handleKeyDown, true)
+    document.addEventListener('keydown', handleKeyDown, true)
+    return () => {
+      window.removeEventListener('keydown', handleKeyDown, true)
+      document.removeEventListener('keydown', handleKeyDown, true)
+    }
+  }, [])
+
+  const handleTouchStart = (event) => {
+    touchStartYRef.current = event.touches?.[0]?.clientY ?? null
+  }
+
+  const handleTouchEnd = (event) => {
+    const startY = touchStartYRef.current
+    touchStartYRef.current = null
+
+    if (startY === null) {
+      return
+    }
+
+    const endY = event.changedTouches?.[0]?.clientY ?? startY
+    if (endY - startY > 80) {
+      closeLightbox()
+    }
+  }
 
   return (
     <section id="gallery" className="py-20 px-4 bg-earth-dark">
@@ -34,7 +70,7 @@ export default function Gallery() {
                 className="w-full h-full object-cover transition transform group-hover:scale-110"
                 loading="lazy"
               />
-              <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition flex items-center justify-center">
+              <div className="pointer-events-none absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition flex items-center justify-center">
                 <svg className="w-12 h-12 text-turmeric" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0zM10 7v3m0 0v3m0-3h3m-3 0H7" />
                 </svg>
@@ -64,17 +100,29 @@ export default function Gallery() {
       {lightbox && (
         <div
           onClick={() => setLightbox(null)}
-          className="fixed inset-0 bg-black/90 z-50 flex items-center justify-center p-4"
+          onTouchStart={handleTouchStart}
+          onTouchEnd={handleTouchEnd}
+          className="fixed inset-0 z-[9990] flex items-center justify-center bg-black/90 p-4"
         >
           <button
-            onClick={() => setLightbox(null)}
-            className="absolute top-4 right-4 text-white hover:text-turmeric"
+            type="button"
+            onClick={(event) => {
+              event.stopPropagation()
+              closeLightbox()
+            }}
+            className="fixed right-4 top-4 z-[9999] flex h-11 min-h-[44px] w-11 min-w-[44px] items-center justify-center rounded-full bg-black/60 text-white transition hover:bg-black/80"
+            aria-label="Close gallery photo"
           >
             <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
             </svg>
           </button>
-          <img src={lightbox.url} alt={lightbox.alt} className="max-w-full max-h-full object-contain" />
+          <img
+            src={lightbox.url}
+            alt={lightbox.caption || lightbox.alt || 'Gallery photo'}
+            className="max-w-full max-h-full object-contain"
+            onClick={(event) => event.stopPropagation()}
+          />
         </div>
       )}
     </section>

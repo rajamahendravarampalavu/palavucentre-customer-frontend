@@ -13,7 +13,7 @@ export default function StoryPage() {
           <div className="relative mb-16 rounded-3xl overflow-hidden aspect-video shadow-2xl gold-border">
             <img
               src="https://images.unsplash.com/photo-1552566626-52f8b828add9?w=1200"
-              alt="Restaurant Interior"
+              alt="PalavuCentre restaurant"
               className="w-full h-full object-cover"
             />
             <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>

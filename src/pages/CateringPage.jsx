@@ -40,12 +40,32 @@ export default function CateringPage() {
     try {
       setIsSubmitting(true)
       setError('')
-      await publicApi.submitCatering(form)
+      const payload = {
+        ...form,
+        phone: form.phone.replace(/\D/g, '').slice(-10),
+        email: form.email.trim() || undefined,
+        name: form.name.trim(),
+        eventType: form.eventType.trim(),
+        guests: Number(form.guests) || undefined,
+      }
+      if (!payload.name || payload.name.length < 2) { setError('Name must be at least 2 characters'); return }
+      if (!payload.eventType || payload.eventType.length < 2) { setError('Please select an event type'); return }
+      if (!form.date) { setError('Please select an event date'); return }
+      if (!payload.guests || payload.guests < 1) { setError('Please enter guest count'); return }
+      if (!payload.phone || payload.phone.length !== 10) { setError('Phone must be exactly 10 digits'); return }
+      if (payload.email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(payload.email)) { setError('Please enter a valid email address'); return }
+      await publicApi.submitCatering(payload)
       setSubmitted(true)
       setForm({ name: '', eventType: '', date: '', guests: '', phone: '', email: '', message: '' })
       window.setTimeout(() => setSubmitted(false), 3000)
     } catch (requestError) {
-      setError(requestError.message || "Couldn't submit your request")
+      const fieldErrors = requestError?.payload?.details?.fieldErrors
+      if (fieldErrors) {
+        const msgs = Object.entries(fieldErrors).map(([k, v]) => `${k}: ${Array.isArray(v) ? v[0] : v}`).join(', ')
+        setError(msgs)
+      } else {
+        setError(requestError.message || "Couldn't submit your request")
+      }
     } finally {
       setIsSubmitting(false)
     }
@@ -56,7 +76,7 @@ export default function CateringPage() {
       <div className="relative h-64 overflow-hidden md:h-96">
         <img
           src="https://images.unsplash.com/photo-1511795409834-ef04bbd61622?w=1920"
-          alt="Catering"
+          alt="PalavuCentre restaurant"
           className="h-full w-full object-cover"
         />
         <div className="absolute inset-0 flex items-center justify-center bg-[linear-gradient(180deg,rgba(8,5,1,0.58)_0%,rgba(8,5,1,0.86)_100%)]">
@@ -195,8 +215,10 @@ export default function CateringPage() {
                     type="tel"
                     required
                     placeholder="Phone *"
+                    maxLength="10"
+                    inputMode="numeric"
                     value={form.phone}
-                    onChange={(event) => setForm({ ...form, phone: event.target.value })}
+                    onChange={(event) => setForm({ ...form, phone: event.target.value.replace(/\D/g, '').slice(0, 10) })}
                     className="brand-input"
                   />
                   <input

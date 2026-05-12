@@ -15,7 +15,9 @@ export default function Franchise() {
 
   const handleSubmit = (event) => {
     event.preventDefault()
-    console.log('Franchise inquiry:', formData)
+    if (import.meta.env.DEV) {
+      console.log('Franchise inquiry:', formData)
+    }
     setSubmitted(true)
     setTimeout(() => {
       setSubmitted(false)

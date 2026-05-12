@@ -87,24 +87,29 @@ function HeroVideoCard({ restaurantName, phone, mobile = false }) {
 function QuantityControl({ quantity, onDecrease, onIncrease, compact = false }) {
   return (
     <div
-      className={`flex items-center rounded-full border border-[#D6B154]/35 bg-[#1A0A04] shadow-[0_12px_30px_rgba(0,0,0,0.28)] ${
-        compact ? 'gap-2 px-2 py-1.5' : 'justify-between px-3 py-2'
+      className={`flex shrink-0 items-center overflow-visible rounded-full border border-[#D6B154]/35 bg-[#1A0A04] shadow-[0_12px_30px_rgba(0,0,0,0.28)] ${
+        compact ? 'min-w-[100px] justify-between gap-1 px-1.5 py-1' : 'justify-between px-3 py-2'
       }`}
     >
       <button
+        type="button"
         onClick={onDecrease}
-        className={`flex items-center justify-center rounded-full bg-white/5 text-gold transition hover:bg-gold/15 ${
-          compact ? 'h-8 w-8' : 'h-10 w-10'
+        className={`flex shrink-0 items-center justify-center rounded-full bg-white/5 text-gold transition hover:bg-gold/15 ${
+          compact ? 'h-7 w-7' : 'h-10 w-10'
         }`}
+        aria-label="Decrease quantity"
       >
         <Minus className="h-4 w-4" />
       </button>
-      <span className={`${compact ? 'w-6 text-sm' : 'text-lg'} text-center font-black text-gold`}>{quantity}</span>
+      <span className={`${compact ? 'w-5 text-sm' : 'text-lg'} shrink-0 text-center font-black text-gold`}>{quantity}</span>
       <button
+        type="button"
         onClick={onIncrease}
-        className={`flex items-center justify-center rounded-full bg-gold text-[#160500] transition hover:bg-gold-bright ${
-          compact ? 'h-8 w-8' : 'h-10 w-10'
+        className={`flex shrink-0 items-center justify-center rounded-full text-[#160500] transition ${
+          compact ? 'h-7 w-7' : 'h-10 w-10'
         }`}
+        style={{ backgroundColor: '#D4A017' }}
+        aria-label="Increase quantity"
       >
         <Plus className="h-4 w-4" />
       </button>
@@ -116,7 +121,7 @@ function HomeMenuItemCard({ item, quantity, onAdd, onUpdateQuantity }) {
   const unavailable = item.available === false
 
   return (
-    <article className="relative flex items-center gap-3 overflow-hidden rounded-2xl border border-[rgba(255,255,255,0.06)] bg-[rgba(255,255,255,0.04)] p-4 shadow-[0_2px_12px_rgba(0,0,0,0.3)] transition duration-200 hover:border-[rgba(212,175,55,0.2)]">
+    <article className="relative flex items-center gap-3 overflow-visible rounded-2xl border border-[rgba(255,255,255,0.06)] bg-[rgba(255,255,255,0.04)] p-4 shadow-[0_2px_12px_rgba(0,0,0,0.3)] transition duration-200 hover:border-[rgba(212,175,55,0.2)]">
       <div className="flex min-w-0 flex-1 flex-col gap-1 self-stretch">
         <p className="text-[10px] font-black uppercase tracking-[2px] text-[#D4AF37] leading-none">
           {(item.category?.name || 'Special').toUpperCase()}
@@ -129,16 +134,18 @@ function HomeMenuItemCard({ item, quantity, onAdd, onUpdateQuantity }) {
           {item.desc}
         </p>
 
-        <div className="mt-auto flex items-center justify-between pt-1">
-          <p className="text-[16px] font-black text-[#D4AF37]">{formatCurrency(item.price)}</p>
+        <div className="mt-auto flex min-w-0 flex-col gap-2 pt-1 relative z-10">
+          <p className="shrink-0 text-[16px] font-black text-[#D4AF37]">{formatCurrency(item.price)}</p>
           {unavailable ? (
-            <span className="rounded-full bg-white/5 px-3 py-1 text-[10px] font-black uppercase tracking-[2px] text-text-dim">
+            <span className="rounded-full bg-white/5 px-3 py-1 text-[10px] font-black uppercase tracking-[2px] text-text-dim w-fit">
               Unavailable
             </span>
           ) : quantity === 0 ? (
             <button
+              type="button"
               onClick={() => onAdd(item)}
-              className="flex h-9 w-9 items-center justify-center rounded-full bg-[#D4AF37] text-[#120805] shadow-md transition hover:brightness-110"
+              className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-[#D4AF37] text-[#120805] shadow-md transition hover:brightness-110"
+              aria-label={`Add ${item.name}`}
             >
               <Plus className="h-4 w-4" />
             </button>
@@ -153,7 +160,7 @@ function HomeMenuItemCard({ item, quantity, onAdd, onUpdateQuantity }) {
         </div>
       </div>
 
-      <div className="relative h-[124px] w-[124px] flex-shrink-0 overflow-hidden rounded-xl sm:h-[132px] sm:w-[132px]">
+      <div className="relative h-[100px] w-[100px] flex-shrink-0 overflow-hidden rounded-xl sm:h-[132px] sm:w-[132px] z-0">
         <img src={item.img || '/hero-bg.jpg'} alt={item.name} className="h-full w-full object-cover object-center" />
         <div className="absolute left-1.5 top-1.5 flex h-5 w-5 items-center justify-center rounded-sm border border-white/20 bg-black/50">
           <span className={`h-3 w-3 rounded-sm ${isVegItem(item) ? 'bg-veg' : 'bg-red-urgent'}`}></span>
@@ -239,7 +246,7 @@ export default function Home() {
 
   const renderHeroBackdrop = () => (
     <>
-      <img src="/hero-bg.jpg" alt="Rajamahendravaram bridge" className="h-full w-full object-cover" />
+      <img src="/hero-bg.jpg" alt="PalavuCentre restaurant" className="h-full w-full object-cover" />
       <div className="absolute inset-0 bg-[linear-gradient(90deg,rgba(5,1,0,0.92)_0%,rgba(5,1,0,0.68)_40%,rgba(5,1,0,0.88)_100%)]"></div>
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(201,168,76,0.14),transparent_28%)]"></div>
     </>
@@ -253,7 +260,7 @@ export default function Home() {
             <div className="absolute inset-0">{renderHeroBackdrop()}</div>
             <div className="relative z-10 px-4 pb-10 pt-6">
               <div className="mx-auto max-w-[340px] text-center">
-                <h1 className="brand-logo-hero" style={{ fontSize: 'clamp(21px, 6.4vw, 30px)', lineHeight: '0.98', letterSpacing: '0px' }}>
+                <h1 className="brand-logo-hero" style={{ fontSize: 'clamp(21px, 6.4vw, 30px)', lineHeight: '1.1', letterSpacing: '0px' }}>
                   <span className="block">{heroLines[0]}</span>
                   <span className="block">{heroLines[1]}</span>
                 </h1>
@@ -288,9 +295,9 @@ export default function Home() {
                   </Link>
                 </div>
 
-                <div className="mt-10 grid grid-cols-3 gap-x-5 gap-y-7">
-                  {stats.map((stat, index) => (
-                    <div key={stat.label} className={index === 3 ? 'col-span-3 text-center' : 'text-center'}>
+                <div className="mt-10 grid grid-cols-2 gap-x-5 gap-y-5">
+                  {stats.map((stat) => (
+                    <div key={stat.label} className="text-center">
                       <p className="text-[22px] font-black text-[#E8C84A]">{stat.value}</p>
                       <p className="mt-1 text-[10px] font-bold uppercase tracking-[2px] text-white/60">{stat.label}</p>
                     </div>

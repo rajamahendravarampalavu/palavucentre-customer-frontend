@@ -24,12 +24,24 @@ export default function FranchisePage() {
     try {
       setIsSubmitting(true)
       setError('')
-      await publicApi.submitFranchise(form)
+      const payload = { ...form, phone: form.phone.replace(/\D/g, '').slice(-10), email: form.email.trim(), name: form.name.trim(), city: form.city.trim() }
+      if (!payload.phone || payload.phone.length !== 10) { setError('Phone must be exactly 10 digits'); return }
+      if (!payload.email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(payload.email)) { setError('Please enter a valid email address'); return }
+      if (!payload.name || payload.name.length < 2) { setError('Name must be at least 2 characters'); return }
+      if (!payload.city || payload.city.length < 2) { setError('City must be at least 2 characters'); return }
+      if (!payload.budget) { setError('Please select a budget'); return }
+      await publicApi.submitFranchise(payload)
       setSubmitted(true)
       setForm({ name: '', city: '', phone: '', email: '', budget: '', message: '' })
       window.setTimeout(() => setSubmitted(false), 3000)
     } catch (requestError) {
-      setError(requestError.message || "Couldn't submit your inquiry")
+      const fieldErrors = requestError?.payload?.details?.fieldErrors
+      if (fieldErrors) {
+        const msgs = Object.entries(fieldErrors).map(([k, v]) => `${k}: ${Array.isArray(v) ? v[0] : v}`).join(', ')
+        setError(msgs)
+      } else {
+        setError(requestError.message || "Couldn't submit your inquiry")
+      }
     } finally {
       setIsSubmitting(false)
     }
@@ -40,7 +52,7 @@ export default function FranchisePage() {
       <div className="relative h-96 overflow-hidden">
         <img
           src="https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=1920"
-          alt="Franchise"
+          alt="PalavuCentre restaurant"
           className="h-full w-full object-cover"
         />
         <div className="absolute inset-0 flex items-center justify-center bg-[linear-gradient(180deg,rgba(8,5,1,0.6)_0%,rgba(8,5,1,0.84)_100%)]">
@@ -134,8 +146,10 @@ export default function FranchisePage() {
                     type="tel"
                     required
                     placeholder="Phone *"
+                    maxLength="10"
+                    inputMode="numeric"
                     value={form.phone}
-                    onChange={(event) => setForm({ ...form, phone: event.target.value })}
+                    onChange={(event) => setForm({ ...form, phone: event.target.value.replace(/\D/g, '').slice(0, 10) })}
                     className="brand-input"
                   />
                   <input

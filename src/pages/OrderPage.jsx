@@ -540,7 +540,7 @@ export default function OrderPage() {
         </div>
       </div>
 
-      <div className="mx-auto w-full max-w-[1100px] px-3 pb-12 pt-4 sm:px-4 md:pt-6">
+      <div className="mx-auto w-full max-w-[1100px] px-3 pb-28 pt-4 sm:px-4 md:pt-6 lg:pb-12">
         <div className="grid gap-5 lg:grid-cols-[minmax(0,1fr)_340px] lg:gap-6 xl:grid-cols-[minmax(0,1fr)_380px]">
           <form id="order-checkout-form" onSubmit={handleSubmitOrder} className="space-y-6">
             {error && (<div className="rounded-[20px] border border-red-500/30 bg-red-950/35 px-5 py-4 text-sm text-red-100">{error}</div>)}

@@ -1,33 +1,68 @@
 import { useState } from 'react'
+import { zodResolver } from '@hookform/resolvers/zod'
+import { useForm } from 'react-hook-form'
 
 import { useSiteSettings } from '../context/SiteContext'
 import { publicApi } from '../lib/api'
+import {
+  contactInquiryDefaults,
+  contactInquirySchema,
+  normalizeContactInquiry,
+} from '../lib/contact-form-validation'
 
 export default function Contact() {
-  const [formData, setFormData] = useState({ name: '', phone: '', email: '', message: '' })
   const [submitted, setSubmitted] = useState(false)
-  const [isSubmitting, setIsSubmitting] = useState(false)
-  const [error, setError] = useState('')
+  const [formError, setFormError] = useState('')
+  const {
+    register,
+    handleSubmit,
+    reset,
+    setError,
+    clearErrors,
+    watch,
+    formState: { errors, isSubmitting },
+  } = useForm({
+    defaultValues: contactInquiryDefaults,
+    resolver: zodResolver(contactInquirySchema),
+    mode: 'onBlur',
+    reValidateMode: 'onChange',
+  })
   const { siteSettings } = useSiteSettings()
   const contact = siteSettings?.contact || {}
+  const messageLength = watch('message')?.length || 0
 
-  const handleSubmit = async (event) => {
-    event.preventDefault()
+  const registerField = (name) =>
+    register(name, {
+      onChange: () => {
+        clearErrors(name)
+      },
+    })
 
+  const applyServerErrors = (serverErrors) => {
+    Object.entries(serverErrors || {}).forEach(([field, message]) => {
+      if (message) {
+        setError(field, { type: 'server', message })
+      }
+    })
+  }
+
+  const submitInquiry = async (values) => {
     try {
-      setIsSubmitting(true)
-      setError('')
-      await publicApi.submitContact(formData)
+      setFormError('')
+      await publicApi.submitContact(normalizeContactInquiry(values))
       setSubmitted(true)
-      setFormData({ name: '', phone: '', email: '', message: '' })
+      reset(contactInquiryDefaults)
 
       window.setTimeout(() => {
         setSubmitted(false)
       }, 3000)
     } catch (requestError) {
-      setError(requestError.message || "Couldn't send your message")
-    } finally {
-      setIsSubmitting(false)
+      if (requestError.status === 422 && requestError.payload?.errors) {
+        applyServerErrors(requestError.payload.errors)
+        return
+      }
+
+      setFormError('Something went wrong. Please try again.')
     }
   }
 
@@ -96,10 +131,10 @@ export default function Contact() {
                 Thank you! We&apos;ll get back to you soon.
               </div>
             ) : (
-              <form onSubmit={handleSubmit} className="space-y-4">
-                {error && (
+              <form onSubmit={handleSubmit(submitInquiry)} noValidate className="space-y-4">
+                {formError && (
                   <div className="bg-red-900/50 border border-red-500 text-red-200 p-4 rounded-lg text-center">
-                    {error}
+                    {formError}
                   </div>
                 )}
 
@@ -107,44 +142,69 @@ export default function Contact() {
                   <label className="block text-gray-300 mb-2">Name *</label>
                   <input
                     type="text"
-                    required
-                    value={formData.name}
-                    onChange={(event) => setFormData({ ...formData, name: event.target.value })}
-                    className="w-full px-4 py-3 rounded-lg bg-earth-dark border border-turmeric/30 focus:border-turmeric outline-none text-gray-100"
+                    {...registerField('name')}
+                    className={`w-full px-4 py-3 rounded-lg bg-earth-dark border outline-none text-gray-100 ${
+                      errors.name ? 'border-red-500 focus:border-red-500' : 'border-turmeric/30 focus:border-turmeric'
+                    }`}
+                    aria-invalid={errors.name ? 'true' : 'false'}
                   />
+                  {errors.name && <p className="mt-2 text-sm text-red-300">{errors.name.message}</p>}
                 </div>
 
                 <div>
-                  <label className="block text-gray-300 mb-2">Phone *</label>
+                  <label className="block text-gray-300 mb-2">Phone</label>
                   <input
                     type="tel"
-                    required
-                    value={formData.phone}
-                    onChange={(event) => setFormData({ ...formData, phone: event.target.value })}
-                    className="w-full px-4 py-3 rounded-lg bg-earth-dark border border-turmeric/30 focus:border-turmeric outline-none text-gray-100"
+                    {...registerField('phone')}
+                    className={`w-full px-4 py-3 rounded-lg bg-earth-dark border outline-none text-gray-100 ${
+                      errors.phone ? 'border-red-500 focus:border-red-500' : 'border-turmeric/30 focus:border-turmeric'
+                    }`}
+                    aria-invalid={errors.phone ? 'true' : 'false'}
                   />
+                  {errors.phone && <p className="mt-2 text-sm text-red-300">{errors.phone.message}</p>}
                 </div>
 
                 <div>
                   <label className="block text-gray-300 mb-2">Email *</label>
                   <input
                     type="email"
-                    required
-                    value={formData.email}
-                    onChange={(event) => setFormData({ ...formData, email: event.target.value })}
-                    className="w-full px-4 py-3 rounded-lg bg-earth-dark border border-turmeric/30 focus:border-turmeric outline-none text-gray-100"
+                    {...registerField('email')}
+                    className={`w-full px-4 py-3 rounded-lg bg-earth-dark border outline-none text-gray-100 ${
+                      errors.email ? 'border-red-500 focus:border-red-500' : 'border-turmeric/30 focus:border-turmeric'
+                    }`}
+                    aria-invalid={errors.email ? 'true' : 'false'}
                   />
+                  {errors.email && <p className="mt-2 text-sm text-red-300">{errors.email.message}</p>}
                 </div>
 
                 <div>
-                  <label className="block text-gray-300 mb-2">Message *</label>
+                  <label className="block text-gray-300 mb-2">Subject *</label>
+                  <input
+                    type="text"
+                    {...registerField('subject')}
+                    className={`w-full px-4 py-3 rounded-lg bg-earth-dark border outline-none text-gray-100 ${
+                      errors.subject ? 'border-red-500 focus:border-red-500' : 'border-turmeric/30 focus:border-turmeric'
+                    }`}
+                    aria-invalid={errors.subject ? 'true' : 'false'}
+                  />
+                  {errors.subject && <p className="mt-2 text-sm text-red-300">{errors.subject.message}</p>}
+                </div>
+
+                <div>
+                  <div className="mb-2 flex items-center justify-between gap-3">
+                    <label className="block text-gray-300">Message *</label>
+                    <span className="text-xs text-gray-500">{messageLength}/2000</span>
+                  </div>
                   <textarea
-                    required
                     rows="4"
-                    value={formData.message}
-                    onChange={(event) => setFormData({ ...formData, message: event.target.value })}
-                    className="w-full px-4 py-3 rounded-lg bg-earth-dark border border-turmeric/30 focus:border-turmeric outline-none text-gray-100 resize-none"
+                    maxLength={2000}
+                    {...registerField('message')}
+                    className={`w-full px-4 py-3 rounded-lg bg-earth-dark border outline-none text-gray-100 resize-none ${
+                      errors.message ? 'border-red-500 focus:border-red-500' : 'border-turmeric/30 focus:border-turmeric'
+                    }`}
+                    aria-invalid={errors.message ? 'true' : 'false'}
                   ></textarea>
+                  {errors.message && <p className="mt-2 text-sm text-red-300">{errors.message.message}</p>}
                 </div>
 
                 <button
@@ -152,7 +212,14 @@ export default function Contact() {
                   disabled={isSubmitting}
                   className="w-full bg-turmeric text-earth-dark py-4 rounded-full font-bold text-lg hover:bg-yellow-600 transition"
                 >
-                  {isSubmitting ? 'Sending...' : 'Send Message'}
+                  {isSubmitting ? (
+                    <span className="inline-flex items-center justify-center gap-2">
+                      <span className="h-4 w-4 animate-spin rounded-full border-2 border-earth-dark/30 border-t-earth-dark" />
+                      Sending...
+                    </span>
+                  ) : (
+                    'Send Message'
+                  )}
                 </button>
               </form>
             )}

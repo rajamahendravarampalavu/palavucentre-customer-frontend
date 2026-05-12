@@ -1,32 +1,67 @@
 import { useState } from 'react'
+import { zodResolver } from '@hookform/resolvers/zod'
 import { Clock, Mail, MapPin, MessageCircle, Phone } from 'lucide-react'
+import { useForm } from 'react-hook-form'
 
 import { useSiteSettings } from '../context/SiteContext'
 import { publicApi } from '../lib/api'
+import {
+  contactInquiryDefaults,
+  contactInquirySchema,
+  normalizeContactInquiry,
+} from '../lib/contact-form-validation'
 
 export default function ContactPage() {
-  const [form, setForm] = useState({ name: '', phone: '', email: '', message: '' })
   const [submitted, setSubmitted] = useState(false)
-  const [isSubmitting, setIsSubmitting] = useState(false)
-  const [error, setError] = useState('')
+  const [formError, setFormError] = useState('')
+  const {
+    register,
+    handleSubmit,
+    reset,
+    setError,
+    clearErrors,
+    watch,
+    formState: { errors, isSubmitting },
+  } = useForm({
+    defaultValues: contactInquiryDefaults,
+    resolver: zodResolver(contactInquirySchema),
+    mode: 'onBlur',
+    reValidateMode: 'onChange',
+  })
   const { siteSettings } = useSiteSettings()
   const contact = siteSettings?.contact || {}
   const whatsappLink = contact.whatsappNumber ? `https://wa.me/${contact.whatsappNumber}` : 'https://wa.me/919966655997'
+  const messageLength = watch('message')?.length || 0
 
-  const handleSubmit = async (event) => {
-    event.preventDefault()
+  const registerField = (name) =>
+    register(name, {
+      onChange: () => {
+        clearErrors(name)
+      },
+    })
 
+  const applyServerErrors = (serverErrors) => {
+    Object.entries(serverErrors || {}).forEach(([field, message]) => {
+      if (message) {
+        setError(field, { type: 'server', message })
+      }
+    })
+  }
+
+  const submitInquiry = async (values) => {
     try {
-      setIsSubmitting(true)
-      setError('')
-      await publicApi.submitContact(form)
+      setFormError('')
+      await publicApi.submitContact(normalizeContactInquiry(values))
       setSubmitted(true)
-      setForm({ name: '', phone: '', email: '', message: '' })
+      reset(contactInquiryDefaults)
       window.setTimeout(() => setSubmitted(false), 3000)
     } catch (requestError) {
-      setError(requestError.message || "Couldn't send your message")
-    } finally {
-      setIsSubmitting(false)
+      if (requestError.status === 422 && requestError.payload?.errors) {
+        applyServerErrors(requestError.payload.errors)
+        return
+      }
+
+      setFormError('Something went wrong. Please try again.')
     }
   }
 
@@ -141,10 +176,10 @@ export default function ContactPage() {
                   Thank you! We&apos;ll get back to you soon.
                 </div>
               ) : (
-                <form onSubmit={handleSubmit} className="mt-8 space-y-4">
-                  {error && (
+                <form onSubmit={handleSubmit(submitInquiry)} noValidate className="mt-8 space-y-4">
+                  {formError && (
                     <div className="rounded-[24px] border border-red-500/30 bg-red-950/30 p-4 text-center text-red-100">
-                      {error}
+                      {formError}
                     </div>
                   )}
                   <div>
@@ -153,23 +188,23 @@ export default function ContactPage() {
                     </label>
                     <input
                       type="text"
-                      required
-                      value={form.name}
-                      onChange={(event) => setForm({ ...form, name: event.target.value })}
-                      className="brand-input"
+                      {...registerField('name')}
+                      className={`brand-input ${errors.name ? 'border-red-500 focus:border-red-500' : ''}`}
+                      aria-invalid={errors.name ? 'true' : 'false'}
                     />
+                    {errors.name && <p className="mt-2 text-sm text-red-400">{errors.name.message}</p>}
                   </div>
                   <div>
                     <label className="mb-2 block text-[11px] font-bold uppercase tracking-[2px] text-text-dim">
-                      Phone *
+                      Phone
                     </label>
                     <input
                       type="tel"
-                      required
-                      value={form.phone}
-                      onChange={(event) => setForm({ ...form, phone: event.target.value })}
-                      className="brand-input"
+                      {...registerField('phone')}
+                      className={`brand-input ${errors.phone ? 'border-red-500 focus:border-red-500' : ''}`}
+                      aria-invalid={errors.phone ? 'true' : 'false'}
                     />
+                    {errors.phone && <p className="mt-2 text-sm text-red-400">{errors.phone.message}</p>}
                   </div>
                   <div>
                     <label className="mb-2 block text-[11px] font-bold uppercase tracking-[2px] text-text-dim">
@@ -177,26 +212,49 @@ export default function ContactPage() {
                     </label>
                     <input
                       type="email"
-                      required
-                      value={form.email}
-                      onChange={(event) => setForm({ ...form, email: event.target.value })}
-                      className="brand-input"
+                      {...registerField('email')}
+                      className={`brand-input ${errors.email ? 'border-red-500 focus:border-red-500' : ''}`}
+                      aria-invalid={errors.email ? 'true' : 'false'}
                     />
+                    {errors.email && <p className="mt-2 text-sm text-red-400">{errors.email.message}</p>}
                   </div>
                   <div>
                     <label className="mb-2 block text-[11px] font-bold uppercase tracking-[2px] text-text-dim">
-                      Message *
+                      Subject *
                     </label>
+                    <input
+                      type="text"
+                      {...registerField('subject')}
+                      className={`brand-input ${errors.subject ? 'border-red-500 focus:border-red-500' : ''}`}
+                      aria-invalid={errors.subject ? 'true' : 'false'}
+                    />
+                    {errors.subject && <p className="mt-2 text-sm text-red-400">{errors.subject.message}</p>}
+                  </div>
+                  <div>
+                    <div className="mb-2 flex items-center justify-between gap-3">
+                      <label className="block text-[11px] font-bold uppercase tracking-[2px] text-text-dim">
+                        Message *
+                      </label>
+                      <span className="text-xs text-text-dim">{messageLength}/2000</span>
+                    </div>
                     <textarea
-                      required
                       rows="5"
-                      value={form.message}
-                      onChange={(event) => setForm({ ...form, message: event.target.value })}
-                      className="brand-input resize-none"
+                      maxLength={2000}
+                      {...registerField('message')}
+                      className={`brand-input resize-none ${errors.message ? 'border-red-500 focus:border-red-500' : ''}`}
+                      aria-invalid={errors.message ? 'true' : 'false'}
                     ></textarea>
+                    {errors.message && <p className="mt-2 text-sm text-red-400">{errors.message.message}</p>}
                   </div>
                   <button type="submit" disabled={isSubmitting} className="brand-primary-btn w-full px-6 py-4 text-[12px]">
-                    {isSubmitting ? 'Sending...' : 'Send Message'}
+                    {isSubmitting ? (
+                      <span className="inline-flex items-center justify-center gap-2">
+                        <span className="h-4 w-4 animate-spin rounded-full border-2 border-black/30 border-t-black" />
+                        Sending...
+                      </span>
+                    ) : (
+                      'Send Message'
+                    )}
                   </button>
                 </form>
               )}
