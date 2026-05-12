@@ -83,7 +83,21 @@ export default function AuthPage({ mode = 'login' }) {
       setBusy(true); setSubmitError('')
       if (isSignup) await signup({ name: form.name.trim(), email: form.email.trim(), password: form.password, confirmPassword: form.confirmPassword })
       else await login({ email: form.email.trim(), password: form.password })
-    } catch (err) { setSubmitError(err.message || 'Something went wrong') }
+    } catch (err) {
+      if (err.status === 409) {
+        setSubmitError('This email is already registered. Try logging in or use Google sign-in.')
+      } else if (err.status === 422 || err.message === 'Validation failed') {
+        const fieldErrors = err?.payload?.details?.fieldErrors
+        if (fieldErrors) {
+          const msgs = Object.entries(fieldErrors).map(([k, v]) => `${Array.isArray(v) ? v[0] : v}`).join('. ')
+          setSubmitError(msgs)
+        } else {
+          setSubmitError('Please check your details and try again.')
+        }
+      } else {
+        setSubmitError(err.message || 'Something went wrong')
+      }
+    }
     finally { setBusy(false) }
   }
 
