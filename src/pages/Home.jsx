@@ -88,7 +88,7 @@ function QuantityControl({ quantity, onDecrease, onIncrease, compact = false }) 
   return (
     <div
       className={`flex shrink-0 items-center overflow-visible rounded-full border border-[#D6B154]/35 bg-[#1A0A04] shadow-[0_12px_30px_rgba(0,0,0,0.28)] ${
-        compact ? 'min-w-[100px] justify-between gap-1 px-1.5 py-1' : 'justify-between px-3 py-2'
+        compact ? 'gap-0.5 px-1 py-0.5' : 'justify-between px-3 py-2'
       }`}
     >
       <button
@@ -99,9 +99,9 @@ function QuantityControl({ quantity, onDecrease, onIncrease, compact = false }) 
         }`}
         aria-label="Decrease quantity"
       >
-        <Minus className="h-4 w-4" />
+        <Minus className="h-3.5 w-3.5" />
       </button>
-      <span className={`${compact ? 'w-5 text-sm' : 'text-lg'} shrink-0 text-center font-black text-gold`}>{quantity}</span>
+      <span className={`${compact ? 'w-5 text-[13px]' : 'text-lg'} shrink-0 text-center font-black text-gold`}>{quantity}</span>
       <button
         type="button"
         onClick={onIncrease}
@@ -111,7 +111,7 @@ function QuantityControl({ quantity, onDecrease, onIncrease, compact = false }) 
         style={{ backgroundColor: '#D4A017' }}
         aria-label="Increase quantity"
       >
-        <Plus className="h-4 w-4" />
+        <Plus className="h-3.5 w-3.5" />
       </button>
     </div>
   )
@@ -134,7 +134,7 @@ function HomeMenuItemCard({ item, quantity, onAdd, onUpdateQuantity }) {
           {item.desc}
         </p>
 
-        <div className="mt-auto flex min-w-0 flex-col gap-2 pt-1 relative z-10">
+        <div className="mt-auto flex min-w-0 items-center justify-between gap-2 pt-1 relative z-10">
           <p className="shrink-0 text-[16px] font-black text-[#D4AF37]">{formatCurrency(item.price)}</p>
           {unavailable ? (
             <span className="rounded-full bg-white/5 px-3 py-1 text-[10px] font-black uppercase tracking-[2px] text-text-dim w-fit">
