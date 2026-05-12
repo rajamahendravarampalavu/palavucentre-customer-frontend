@@ -402,7 +402,7 @@ function PopularRow({ items, getQty, onAdd, onUpdate }) {
 }
 
 /* ─── Sticky Checkout Bar ─────────────────────────────────────── */
-function StickyCheckoutBar({ cartItems, onCheckout }) {
+function StickyCheckoutBar({ cartItems, onCheckout, isAuthenticated }) {
   const totalQty   = cartItems.reduce((n, i) => n + i.quantity, 0)
   const totalPrice = cartItems.reduce((n, i) => n + i.price * i.quantity, 0)
   const [visible, setVisible] = useState(false)
@@ -462,7 +462,7 @@ function StickyCheckoutBar({ cartItems, onCheckout }) {
         {/* Middle: label */}
         <span className="flex-1 text-left">
           <span className="block text-[15px] font-bold text-black" style={{ fontFamily: 'DM Sans, sans-serif' }}>
-            View Cart
+            {isAuthenticated ? 'Checkout' : 'Login to Checkout'}
           </span>
           <span className="block text-[11px] font-semibold text-black/60" style={{ fontFamily: 'DM Sans, sans-serif' }}>
             {totalQty} {totalQty === 1 ? 'item' : 'items'} added
@@ -858,6 +858,7 @@ export default function MenuPage() {
       {/* Sticky checkout bar — mobile only, hidden on lg+ */}
       <StickyCheckoutBar
         cartItems={cartItems}
+        isAuthenticated={isAuthenticated}
         onCheckout={() => { if (isAuthenticated) { navigate('/order'); return }; navigateToLoginWithRedirect(navigate, ORDER_ROUTE, 'checkout') }}
       />
     </div>
