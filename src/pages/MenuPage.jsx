@@ -859,7 +859,13 @@ export default function MenuPage() {
       <StickyCheckoutBar
         cartItems={cartItems}
         isAuthenticated={isAuthenticated}
-        onCheckout={() => { if (isAuthenticated) { navigate('/order'); return }; navigateToLoginWithRedirect(navigate, ORDER_ROUTE, 'checkout') }}
+        onCheckout={() => {
+          if (isAuthenticated) {
+            navigate('/order')
+          } else {
+            navigate('/login', { state: { from: { pathname: '/order', search: '' }, authSource: 'checkout' } })
+          }
+        }}
       />
     </div>
   )
