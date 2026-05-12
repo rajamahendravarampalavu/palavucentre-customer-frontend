@@ -44,6 +44,8 @@ function MenuImage({ src, alt, className }) {
     <img
       src={src}
       alt={alt}
+      loading="lazy"
+      decoding="async"
       className={`h-full w-full object-cover ${className}`}
       onError={() => setErrored(true)}
     />
@@ -234,7 +236,7 @@ function FavouriteCard({ item, quantity, onAdd, onUpdateQuantity }) {
     <article className="w-[200px] shrink-0 snap-start overflow-hidden rounded-[14px] border border-[#2E2B1F] bg-[#1A1810] transition-all duration-200 hover:border-[#F0A500]/40">
       <div className="relative h-[120px] w-full overflow-hidden bg-[#111009]">
         {item.img ? (
-          <img src={item.img} alt={item.name} className="h-full w-full object-cover" />
+          <img src={item.img} alt={item.name} loading="lazy" decoding="async" className="h-full w-full object-cover" />
         ) : (
           <div className="flex h-full w-full items-center justify-center text-[#F0A500]/30"><Sparkles className="h-6 w-6" /></div>
         )}

@@ -164,6 +164,8 @@ function HomeMenuItemCard({ item, quantity, onAdd, onUpdateQuantity }) {
         <img
           src={item.img || '/hero-bg.jpg'}
           alt={item.name}
+          loading="lazy"
+          decoding="async"
           className="h-full w-full object-cover object-center"
           onError={(e) => { e.target.style.display = 'none'; e.target.nextSibling.style.display = 'flex' }}
         />
