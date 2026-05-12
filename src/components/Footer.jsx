@@ -205,7 +205,14 @@ export default function Footer() {
         </div>
 
         <div className="bg-bg-section -mx-4 px-4 py-7 text-center text-text-dim text-sm mt-10 pt-8 border-t border-gold/25">
-          <p>&copy; {new Date().getFullYear()} {restaurantName}. All rights reserved.</p>
+          <p className="flex items-center justify-center gap-1.5 text-[13px] text-text-secondary">
+            Made with <span className="text-red-500">&hearts;</span> by
+            <a href="https://staffarc.in" target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1.5 font-semibold text-[#F97316] hover:underline">
+              <img src="https://www.staffarc.in/images/Staffarc-logo.png" alt="StaffArc" className="h-5 w-5" />
+              StaffArc
+            </a>
+          </p>
+          <p className="mt-2">&copy; {new Date().getFullYear()} <span className="text-gold font-medium">{restaurantName}</span>. All rights reserved.</p>
         </div>
       </div>
     </footer>
