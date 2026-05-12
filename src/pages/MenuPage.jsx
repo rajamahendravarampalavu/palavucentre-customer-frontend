@@ -858,7 +858,7 @@ export default function MenuPage() {
       {/* Sticky checkout bar — mobile only, hidden on lg+ */}
       <StickyCheckoutBar
         cartItems={cartItems}
-        onCheckout={() => navigate('/checkout')}
+        onCheckout={() => { if (isAuthenticated) { navigate('/order'); return }; navigateToLoginWithRedirect(navigate, ORDER_ROUTE, 'checkout') }}
       />
     </div>
   )
