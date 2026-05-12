@@ -280,7 +280,7 @@ export default function OrderPage() {
       if (paymentMethod === 'online') setOnlinePaymentStatus('Preparing secure checkout...')
       const checkoutLoader = paymentMethod === 'online' ? loadRazorpayCheckout().catch(() => null) : null
       const customer = buildCustomerPayload({ formData, user })
-      let orderPayload = pendingOnlineOrder
+      let orderPayload = paymentMethod === 'online' ? pendingOnlineOrder : null
       if (paymentMethod === 'online' && orderPayload?.order?.orderNumber) {
         setOnlinePaymentStatus('Refreshing your pending payment session...')
         const gr = await publicApi.createRazorpayOrder({ orderNumber: orderPayload.order.orderNumber })
@@ -608,7 +608,7 @@ export default function OrderPage() {
 
                 {/* Payment options */}
                 <div className="mt-5 space-y-3">
-                  <button type="button" onClick={() => setPaymentMethod('cod')}
+                  <button type="button" onClick={() => { setPaymentMethod('cod'); setPendingOnlineOrder(null); setOnlinePaymentStatus('') }}
                     className={`w-full rounded-[14px] border text-left transition-all duration-200 ${paymentMethod === 'cod' ? 'border-[#F0A500] border-l-[3px] bg-[#F0A500]/[0.025]' : 'border-[#2E2B1F] bg-[#1C1A14] hover:border-[#3A3520]'}`} style={{ padding: '18px 16px' }}>
                     <div className="flex items-start justify-between gap-3">
                       <div>
