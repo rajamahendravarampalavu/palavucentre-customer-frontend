@@ -30,15 +30,15 @@ export default function LocationPicker({ selected, onSelect }) {
   return (
     <div className="space-y-3">
       <div className="flex items-center justify-between">
-        <p className="text-[11px] font-bold uppercase tracking-wider text-[#8A8060]" style={{ fontFamily: 'DM Sans, sans-serif' }}>
-          Select Store Location
+        <p className="text-[11px] font-bold uppercase tracking-wider text-[#B0A880]" style={{ fontFamily: 'DM Sans, sans-serif' }}>
+          Select Pickup Branch
         </p>
         {geoStatus === 'idle' || geoStatus === 'denied' ? (
           <button type="button" onClick={detectLocation} className="flex items-center gap-1 text-[11px] font-medium text-[#F0A500] transition hover:text-[#F0A500]/80">
             <Navigation className="h-3 w-3" /> Detect my location
           </button>
         ) : geoStatus === 'loading' ? (
-          <span className="flex items-center gap-1 text-[11px] text-[#8A8060]"><Loader2 className="h-3 w-3 animate-spin" /> Detecting...</span>
+          <span className="flex items-center gap-1 text-[11px] text-[#B0A880]"><Loader2 className="h-3 w-3 animate-spin" /> Finding nearest branch...</span>
         ) : null}
       </div>
 
@@ -50,9 +50,9 @@ export default function LocationPicker({ selected, onSelect }) {
             key={loc.id}
             type="button"
             onClick={() => onSelect(loc.id)}
-            className={`w-full rounded-[14px] border text-left transition-all duration-200 ${
+            className={`w-full rounded-[14px] border-2 text-left transition-all duration-200 ${
               isSelected
-                ? 'border-[#F0A500] bg-[#F0A500]/[0.06] shadow-[0_0_20px_rgba(240,165,0,0.08)]'
+                ? 'border-[#F0A500] bg-[#F0A500]/[0.08] shadow-[0_0_24px_rgba(240,165,0,0.12)]'
                 : 'border-[#2E2B1F] bg-[#111009] hover:border-[#3A3520]'
             }`}
             style={{ padding: '14px 16px' }}

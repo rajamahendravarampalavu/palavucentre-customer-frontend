@@ -39,8 +39,9 @@ function RequireAccountAuth({ children }) {
 function AppContent() {
   const location = useLocation()
   const showPublicShell = true
-  const hideWhatsappFab = location.pathname === '/order' || location.pathname.startsWith('/profile')
-  const showCartBar = location.pathname === '/menu'
+  const hideFooter = location.pathname === '/order'
+  const hideWhatsappFab = location.pathname === '/order' || location.pathname.startsWith('/profile') || location.pathname === '/menu'
+  const showCartBar = false // MenuPage has its own checkout bar
 
   return (
     <div className="min-h-screen bg-bg-page text-text-primary flex flex-col">
@@ -78,7 +79,7 @@ function AppContent() {
           />
         </Routes>
       </main>
-      {showPublicShell && <Footer />}
+      {showPublicShell && !hideFooter && <Footer />}
     </div>
   )
 }

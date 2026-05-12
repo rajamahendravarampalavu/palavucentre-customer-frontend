@@ -336,7 +336,7 @@ export default function OrderPage() {
 
   if (orderResult) {
     return (
-      <div className="min-h-screen bg-[#0D0C09] px-4 pt-20 pb-12 sm:pt-24">
+      <div className="min-h-screen bg-[#0D0C09] px-4 pt-20 pb-20 sm:pt-24">
         <div className="mx-auto max-w-[520px]">
 
           {/* Success header */}
@@ -345,62 +345,62 @@ export default function OrderPage() {
               <CheckCircle2 className="h-8 w-8 text-emerald-400" />
             </div>
             <p className="mt-4 text-[28px] font-bold text-[#F8F1DE] sm:text-[34px]" style={{ fontFamily: 'Playfair Display, serif' }}>Order Confirmed</p>
-            <p className="mt-2 text-[14px] text-[#8A8060]" style={{ fontFamily: 'DM Sans, sans-serif' }}>Your order is being prepared for pickup. Track it from My Orders in your account.</p>
+            <p className="mt-2 text-[14px] text-[#B0A880]" style={{ fontFamily: 'DM Sans, sans-serif' }}>Your order is being prepared for pickup. Track it from My Orders in your account.</p>
           </div>
 
           {/* Order number card */}
           <div className="mt-6 rounded-[14px] border border-[#F0A500]/25 bg-[#F0A500]/5 p-4 text-center">
             <p className="text-[10px] font-bold uppercase tracking-wider text-[#F0A500]/60" style={{ fontFamily: 'DM Sans, sans-serif' }}>Order Number</p>
             <p className="mt-1 text-[18px] font-bold text-[#F0A500] sm:text-[20px]" style={{ fontFamily: 'DM Sans, sans-serif' }}>{orderResult.orderNumber}</p>
-            <p className="mt-1 text-[11px] uppercase tracking-wider text-[#8A8060]">{orderResult.paymentMethod === 'online' ? 'Paid Online' : 'Cash at Pickup'}</p>
+            <p className="mt-1 text-[11px] uppercase tracking-wider text-[#B0A880]">{orderResult.paymentMethod === 'online' ? 'Paid Online' : 'Cash at Pickup'}</p>
           </div>
 
           {/* Details grid */}
           <div className="mt-4 grid grid-cols-2 gap-3">
             <div className="rounded-[14px] border border-[#2E2B1F] bg-[#1A1810] p-3.5">
-              <p className="text-[10px] font-bold uppercase tracking-wider text-[#8A8060]" style={{ fontFamily: 'DM Sans, sans-serif' }}>Payment</p>
+              <p className="text-[10px] font-bold uppercase tracking-wider text-[#B0A880]" style={{ fontFamily: 'DM Sans, sans-serif' }}>Payment</p>
               <p className="mt-1.5 text-[14px] font-semibold capitalize text-white" style={{ fontFamily: 'DM Sans, sans-serif' }}>{orderResult.paymentMethod}</p>
-              <p className="mt-0.5 text-[12px] capitalize text-[#8A8060]">{orderResult.paymentStatus}</p>
+              <p className="mt-0.5 text-[12px] capitalize text-[#B0A880]">{orderResult.paymentStatus}</p>
             </div>
             <div className="rounded-[14px] border border-[#2E2B1F] bg-[#1A1810] p-3.5">
-              <p className="text-[10px] font-bold uppercase tracking-wider text-[#8A8060]" style={{ fontFamily: 'DM Sans, sans-serif' }}>Total</p>
+              <p className="text-[10px] font-bold uppercase tracking-wider text-[#B0A880]" style={{ fontFamily: 'DM Sans, sans-serif' }}>Total</p>
               <p className="mt-1.5 text-[20px] font-bold text-[#F0A500]" style={{ fontFamily: 'DM Sans, sans-serif' }}>{formatCurrency(orderResult.pricing?.grandTotal)}</p>
-              <p className="mt-0.5 text-[12px] capitalize text-[#8A8060]">{orderResult.orderStatus}</p>
+              <p className="mt-0.5 text-[12px] capitalize text-[#B0A880]">{orderResult.orderStatus}</p>
             </div>
           </div>
 
           <div className="mt-3 rounded-[14px] border border-[#2E2B1F] bg-[#1A1810] p-3.5">
-            <p className="text-[10px] font-bold uppercase tracking-wider text-[#8A8060]" style={{ fontFamily: 'DM Sans, sans-serif' }}>Pickup Store</p>
+            <p className="text-[10px] font-bold uppercase tracking-wider text-[#B0A880]" style={{ fontFamily: 'DM Sans, sans-serif' }}>Pickup Store</p>
             <p className="mt-1.5 text-[13px] leading-[1.6] text-[#B0A880]" style={{ fontFamily: 'DM Sans, sans-serif' }}>{getStoreLocationLabel(orderResult.storeLocation)}</p>
           </div>
 
           {/* Order items */}
           <div className="mt-3 rounded-[14px] border border-[#2E2B1F] bg-[#1A1810] p-3.5">
             <div className="flex items-center justify-between">
-              <p className="text-[10px] font-bold uppercase tracking-wider text-[#8A8060]" style={{ fontFamily: 'DM Sans, sans-serif' }}>Items</p>
-              <span className="text-[11px] text-[#8A8060]">{orderResult.items?.length || 0} items</span>
+              <p className="text-[10px] font-bold uppercase tracking-wider text-[#B0A880]" style={{ fontFamily: 'DM Sans, sans-serif' }}>Items</p>
+              <span className="text-[11px] text-[#B0A880]">{orderResult.items?.length || 0} items</span>
             </div>
             <div className="mt-3 space-y-2.5">
               {orderResult.items?.map((item, index) => (
                 <div key={`${item.name}-${index}`} className="flex items-center justify-between gap-3">
                   <div className="min-w-0">
                     <p className="truncate text-[14px] font-medium text-white" style={{ fontFamily: 'DM Sans, sans-serif' }}>{item.name}</p>
-                    <p className="text-[12px] text-[#8A8060]">{item.quantity} x {formatCurrency(item.unitPrice)}</p>
+                    <p className="text-[12px] text-[#B0A880]">{item.quantity} x {formatCurrency(item.unitPrice)}</p>
                   </div>
                   <p className="shrink-0 text-[14px] font-bold text-white" style={{ fontFamily: 'DM Sans, sans-serif' }}>{formatCurrency(item.total)}</p>
                 </div>
               ))}
             </div>
             <div className="mt-3 border-t border-[#2E2B1F] pt-3 space-y-1.5 text-[13px]" style={{ fontFamily: 'DM Sans, sans-serif' }}>
-              <div className="flex justify-between"><span className="text-[#8A8060]">Subtotal</span><span className="text-white">{formatCurrency(orderResult.pricing?.subTotal)}</span></div>
-              <div className="flex justify-between"><span className="text-[#8A8060]">Tax</span><span className="text-white">{formatCurrency(orderResult.pricing?.taxAmount)}</span></div>
+              <div className="flex justify-between"><span className="text-[#B0A880]">Subtotal</span><span className="text-white">{formatCurrency(orderResult.pricing?.subTotal)}</span></div>
+              <div className="flex justify-between"><span className="text-[#B0A880]">Tax</span><span className="text-white">{formatCurrency(orderResult.pricing?.taxAmount)}</span></div>
               <div className="flex justify-between border-t border-[#2E2B1F] pt-2 text-[15px] font-bold"><span className="text-[#F0A500]">Total</span><span className="text-[#F0A500]">{formatCurrency(orderResult.pricing?.grandTotal)}</span></div>
             </div>
           </div>
 
           {/* What happens next */}
           <div className="mt-3 rounded-[14px] border border-[#2E2B1F] bg-[#1A1810] p-3.5">
-            <p className="text-[10px] font-bold uppercase tracking-wider text-[#8A8060]" style={{ fontFamily: 'DM Sans, sans-serif' }}>What Happens Next</p>
+            <p className="text-[10px] font-bold uppercase tracking-wider text-[#B0A880]" style={{ fontFamily: 'DM Sans, sans-serif' }}>What Happens Next</p>
             <div className="mt-3 space-y-0">
               {['Kitchen accepts your order', 'Track status from My Orders', 'Pick up from the selected store'].map((text, i) => (
                 <div key={i}>
@@ -420,7 +420,7 @@ export default function OrderPage() {
               className="shimmer-btn flex h-[52px] w-full items-center justify-center gap-2 rounded-xl bg-[#F0A500] text-[15px] font-bold text-black active:scale-[0.97]">
               My Orders
             </button>
-            <Link to="/menu" className="flex h-[48px] w-full items-center justify-center rounded-xl border border-[#2E2B1F] text-[14px] font-medium text-[#8A8060] transition hover:border-[#F0A500]/30 hover:text-[#F0A500]">
+            <Link to="/menu" className="flex h-[48px] w-full items-center justify-center rounded-xl border border-[#2E2B1F] text-[14px] font-medium text-[#B0A880] transition hover:border-[#F0A500]/30 hover:text-[#F0A500]">
               Browse Menu
             </Link>
           </div>
@@ -464,13 +464,13 @@ export default function OrderPage() {
                     <div className={`relative flex h-8 w-8 items-center justify-center rounded-full text-[13px] font-bold transition-all duration-200 ${
                       done ? 'bg-[#F0A500] text-white'
                       : active ? 'bg-[#F0A500] text-white shadow-[0_0_16px_rgba(240,165,0,0.35)]'
-                      : 'border-2 border-[#3A3A3A] bg-transparent text-[#6B6B6B]'
+                      : 'border-2 border-[#3A3A3A] bg-transparent text-[#8A8060]'
                     }`}>
                       {done ? <Check className="h-4 w-4" /> : sn}
                     </div>
                   </div>
                   <span className={`text-[11px] font-medium tracking-wide transition-colors duration-200 ${
-                    active ? 'text-[#F0A500]' : done ? 'text-[#F0A500]/60' : 'text-[#6B6B6B]'
+                    active ? 'text-[#F0A500]' : done ? 'text-[#F0A500]/60' : 'text-[#8A8060]'
                   }`} style={{ fontFamily: 'DM Sans, sans-serif' }}>{label}</span>
                 </button>
                 {!isLast && (
@@ -512,7 +512,7 @@ export default function OrderPage() {
                       {item.img ? <img src={item.img} alt={item.name} className="h-10 w-10 shrink-0 rounded-lg object-cover" /> : <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-[#F0A500]/10"><ShoppingBag className="h-4 w-4 text-[#F0A500]" /></div>}
                       <div className="min-w-0 flex-1">
                         <p className="truncate text-[14px] font-semibold text-white" style={{ fontFamily: 'DM Sans, sans-serif' }}>{item.name}</p>
-                        <p className="text-[12px] text-[#8A8060]">{formatCurrency(item.price)} each</p>
+                        <p className="text-[12px] text-[#B0A880]">{formatCurrency(item.price)} each</p>
                       </div>
                       {checkoutStep < 3 ? (
                         <div className="flex items-center gap-1.5 shrink-0">
@@ -520,7 +520,7 @@ export default function OrderPage() {
                           <span className="w-5 text-center text-[13px] font-bold text-white">{item.quantity}</span>
                           <button type="button" onClick={() => updateQuantity(item.id, item.quantity + 1)} className="flex h-6 w-6 items-center justify-center rounded-full border border-[#F0A500]/30 text-[#F0A500]"><Plus className="h-3 w-3" /></button>
                         </div>
-                      ) : <span className="text-[12px] text-[#8A8060] shrink-0">x{item.quantity}</span>}
+                      ) : <span className="text-[12px] text-[#B0A880] shrink-0">x{item.quantity}</span>}
                       <p className="shrink-0 w-14 text-right text-[14px] font-bold text-white">{formatCurrency(item.price * item.quantity)}</p>
                       {checkoutStep < 3 && <button type="button" onClick={() => removeFromCart(item.id)} className="shrink-0 text-[#FF4444]"><Trash2 className="h-[18px] w-[18px]" /></button>}
                     </div>
@@ -604,7 +604,7 @@ export default function OrderPage() {
                   <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-[#F0A500] text-[14px] font-bold text-black">3</span>
                   <p className="text-[22px] text-[#F0A500]" style={{ fontFamily: 'Playfair Display, serif' }}>Payment</p>
                 </div>
-                <p className="mt-2 text-[13px] text-[#8A8060]" style={{ fontFamily: 'DM Sans, sans-serif' }}>Choose payment and apply a promo.</p>
+                <p className="mt-2 text-[13px] text-[#B0A880]" style={{ fontFamily: 'DM Sans, sans-serif' }}>Choose payment and apply a promo.</p>
 
                 {/* Payment options */}
                 <div className="mt-5 space-y-3">
@@ -613,7 +613,7 @@ export default function OrderPage() {
                     <div className="flex items-start justify-between gap-3">
                       <div>
                         <p className="text-[15px] font-semibold text-white" style={{ fontFamily: 'DM Sans, sans-serif' }}>Cash at Pickup</p>
-                        <p className="mt-1 text-[12px] text-[#8A8060]" style={{ fontFamily: 'DM Sans, sans-serif' }}>Pay at the counter when you collect your order.</p>
+                        <p className="mt-1 text-[12px] text-[#B0A880]" style={{ fontFamily: 'DM Sans, sans-serif' }}>Pay at the counter when you collect your order.</p>
                       </div>
                       <span className={`flex h-5 w-5 shrink-0 items-center justify-center rounded-full border-2 border-[#F0A500] transition-all duration-200 ${paymentMethod === 'cod' ? 'bg-[#F0A500]' : 'bg-transparent'}`}>
                         {paymentMethod === 'cod' && <Check className="h-3 w-3 text-white" />}
@@ -626,7 +626,7 @@ export default function OrderPage() {
                     <div className="flex items-start justify-between gap-3">
                       <div>
                         <p className="text-[15px] font-semibold text-white" style={{ fontFamily: 'DM Sans, sans-serif' }}>Razorpay Secure Payment</p>
-                        <p className="mt-1 text-[12px] text-[#8A8060]" style={{ fontFamily: 'DM Sans, sans-serif' }}>Cards, UPI, netbanking, or wallet.</p>
+                        <p className="mt-1 text-[12px] text-[#B0A880]" style={{ fontFamily: 'DM Sans, sans-serif' }}>Cards, UPI, netbanking, or wallet.</p>
                         <div className="mt-2.5 flex flex-wrap gap-1.5">
                           <span className="rounded-md border border-[#2A5A2A] bg-[#1A2A1A] text-[10px] font-bold uppercase text-[#4CAF50]" style={{ padding: '3px 8px', borderRadius: '6px' }}>PCI-DSS Secure</span>
                           <span className="rounded-md border border-[#2A3A5A] bg-[#1A1F2A] text-[10px] font-bold uppercase text-[#5B9CF6]" style={{ padding: '3px 8px', borderRadius: '6px' }}>Instant Verification</span>
@@ -642,7 +642,7 @@ export default function OrderPage() {
                 {/* How payment works */}
                 {paymentMethod === 'online' && (
                   <div className="mt-4 rounded-[14px] border border-[#2E2B1F] bg-[#111009] p-4">
-                    <p className="text-[10px] font-medium uppercase tracking-wider text-[#6B6B6B]" style={{ fontFamily: 'DM Sans, sans-serif' }}>How Payment Works</p>
+                    <p className="text-[10px] font-medium uppercase tracking-wider text-[#8A8060]" style={{ fontFamily: 'DM Sans, sans-serif' }}>How Payment Works</p>
                     <div className="mt-3">
                       {[
                         'We create your order securely.',
@@ -670,7 +670,7 @@ export default function OrderPage() {
                 {/* Promo code */}
                 <div className="mt-4 rounded-[14px] border border-[#2E2B1F] bg-[#111009] p-4">
                   <div className="flex items-center justify-between">
-                    <p className="text-[10px] font-medium uppercase tracking-wider text-[#6B6B6B]" style={{ fontFamily: 'DM Sans, sans-serif' }}>Promo Code</p>
+                    <p className="text-[10px] font-medium uppercase tracking-wider text-[#8A8060]" style={{ fontFamily: 'DM Sans, sans-serif' }}>Promo Code</p>
                     {appliedPromoCode && (
                       <button type="button" onClick={handleRemovePromo} className="text-[10px] font-bold uppercase tracking-wider text-red-400 transition hover:text-red-300">Remove</button>
                     )}
@@ -678,7 +678,7 @@ export default function OrderPage() {
                   {!appliedPromoCode && (
                     <div className="mt-3 flex gap-2">
                       <input value={promoCodeInput} onChange={(e) => setPromoCodeInput(e.target.value.toUpperCase())} placeholder="Enter code"
-                        className={`h-[42px] flex-1 rounded-[10px] border border-[#2E2B1F] bg-[#1C1A14] px-3 text-[14px] font-medium text-white outline-none transition placeholder:text-[#6B6B6B] focus:border-[#F0A500]/50 ${promoError ? 'border-red-500/50' : ''}`} style={{ fontFamily: 'DM Sans, sans-serif' }} />
+                        className={`h-[42px] flex-1 rounded-[10px] border border-[#2E2B1F] bg-[#1C1A14] px-3 text-[14px] font-medium text-white outline-none transition placeholder:text-[#8A8060] focus:border-[#F0A500]/50 ${promoError ? 'border-red-500/50' : ''}`} style={{ fontFamily: 'DM Sans, sans-serif' }} />
                       <button type="button" onClick={handleApplyPromo} disabled={isApplyingPromo || !promoCodeInput.trim()}
                         className="h-[42px] rounded-[10px] bg-[#F0A500]/15 px-4 text-[13px] font-bold text-[#F0A500] transition hover:bg-[#F0A500]/25 disabled:opacity-40">
                         {isApplyingPromo ? '...' : 'Apply'}
@@ -695,7 +695,7 @@ export default function OrderPage() {
 
                 {/* Place Order CTA - desktop only (mobile uses sticky bottom bar) */}
                 <div className="mt-5 hidden lg:flex gap-3">
-                  <button type="button" onClick={() => setCheckoutStep(2)} className="flex h-[52px] items-center justify-center gap-1.5 rounded-xl border border-[#2E2B1F] bg-transparent px-5 text-[13px] font-medium text-[#8A8060] transition hover:border-[#F0A500]/30 active:scale-[0.97]">
+                  <button type="button" onClick={() => setCheckoutStep(2)} className="flex h-[52px] items-center justify-center gap-1.5 rounded-xl border border-[#2E2B1F] bg-transparent px-5 text-[13px] font-medium text-[#B0A880] transition hover:border-[#F0A500]/30 active:scale-[0.97]">
                     <ArrowLeft className="h-4 w-4" /> Back
                   </button>
                   <button type="submit" form="order-checkout-form" disabled={isSubmitting}
@@ -716,7 +716,7 @@ export default function OrderPage() {
                   <ShoppingBag className="h-[18px] w-[18px] text-[#F0A500]" />
                   <span className="text-[14px] font-bold text-white" style={{ fontFamily: 'DM Sans, sans-serif' }}>Your Order</span>
                 </div>
-                <span className="text-[12px] text-[#8A8060]" style={{ fontFamily: 'DM Sans, sans-serif' }}>{totalItems} {totalItems === 1 ? 'item' : 'items'}</span>
+                <span className="text-[12px] text-[#B0A880]" style={{ fontFamily: 'DM Sans, sans-serif' }}>{totalItems} {totalItems === 1 ? 'item' : 'items'}</span>
               </div>
 
               {/* Items */}
@@ -730,7 +730,7 @@ export default function OrderPage() {
                     )}
                     <div className="min-w-0 flex-1">
                       <p className="truncate text-[14px] font-semibold text-white" style={{ fontFamily: 'DM Sans, sans-serif' }}>{item.name}</p>
-                      <p className="text-[12px] text-[#8A8060]" style={{ fontFamily: 'DM Sans, sans-serif' }}>{formatCurrency(item.price)} each</p>
+                      <p className="text-[12px] text-[#B0A880]" style={{ fontFamily: 'DM Sans, sans-serif' }}>{formatCurrency(item.price)} each</p>
                     </div>
                     <div className="flex items-center gap-1.5 shrink-0">
                       <button type="button" onClick={() => updateQuantity(item.id, item.quantity - 1)} className="flex h-6 w-6 items-center justify-center rounded-full border border-[#F0A500]/30 text-[#F0A500] transition hover:bg-[#F0A500]/10"><Minus className="h-3 w-3" /></button>
@@ -755,12 +755,12 @@ export default function OrderPage() {
 
               {/* Back to menu */}
               <div className="border-t border-[#2E2B1F] px-5 py-3">
-                <Link to="/menu" className="flex w-full items-center justify-center gap-2 text-[13px] text-[#8A8060] transition hover:text-[#F0A500]" style={{ fontFamily: 'DM Sans, sans-serif' }}>&larr; Back to Menu</Link>
+                <Link to="/menu" className="flex w-full items-center justify-center gap-2 text-[13px] text-[#B0A880] transition hover:text-[#F0A500]" style={{ fontFamily: 'DM Sans, sans-serif' }}>&larr; Back to Menu</Link>
               </div>
             </div>
           </aside>
         {/* Sticky bottom CTA - mobile only */}
-        <div className="fixed bottom-0 inset-x-0 z-[60] border-t border-[#2E2B1F] bg-[#0D0C09] px-4 py-3 lg:hidden">
+        <div className="fixed bottom-0 inset-x-0 z-[60] border-t border-[#2E2B1F] bg-[#0D0C09] px-4 py-3 lg:hidden safe-bottom">
           <div className="mx-auto max-w-[600px]">
             {checkoutStep === 1 && (
               <button type="button" onClick={goToStep2} className="shimmer-btn flex h-[52px] w-full items-center justify-center gap-2 rounded-xl bg-[#F0A500] text-[15px] font-bold text-black active:scale-[0.97]">
@@ -769,7 +769,7 @@ export default function OrderPage() {
             )}
             {checkoutStep === 2 && (
               <div className="flex gap-3">
-                <button type="button" onClick={() => setCheckoutStep(1)} className="flex h-[52px] w-14 shrink-0 items-center justify-center rounded-xl border border-[#2E2B1F] text-[#8A8060] active:scale-[0.95]">
+                <button type="button" onClick={() => setCheckoutStep(1)} className="flex h-[52px] w-14 shrink-0 items-center justify-center rounded-xl border border-[#2E2B1F] text-[#B0A880] active:scale-[0.95]">
                   <ArrowLeft className="h-5 w-5" />
                 </button>
                 <button type="button" onClick={goToStep3} className="shimmer-btn flex h-[52px] flex-1 items-center justify-center gap-2 rounded-xl bg-[#F0A500] text-[15px] font-bold text-black active:scale-[0.97]">
@@ -779,7 +779,7 @@ export default function OrderPage() {
             )}
             {checkoutStep === 3 && (
               <div className="flex gap-3">
-                <button type="button" onClick={() => setCheckoutStep(2)} className="flex h-[52px] w-14 shrink-0 items-center justify-center rounded-xl border border-[#2E2B1F] text-[#8A8060] active:scale-[0.95]">
+                <button type="button" onClick={() => setCheckoutStep(2)} className="flex h-[52px] w-14 shrink-0 items-center justify-center rounded-xl border border-[#2E2B1F] text-[#B0A880] active:scale-[0.95]">
                   <ArrowLeft className="h-5 w-5" />
                 </button>
                 <button type="submit" form="order-checkout-form" disabled={isSubmitting} className="shimmer-btn flex h-[52px] flex-1 items-center justify-center gap-2 rounded-xl bg-[#F0A500] text-[15px] font-bold text-black active:scale-[0.97] disabled:opacity-50">
