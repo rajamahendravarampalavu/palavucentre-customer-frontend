@@ -161,7 +161,15 @@ function HomeMenuItemCard({ item, quantity, onAdd, onUpdateQuantity }) {
       </div>
 
       <div className="relative h-[100px] w-[100px] flex-shrink-0 overflow-hidden rounded-xl sm:h-[132px] sm:w-[132px] z-0">
-        <img src={item.img || '/hero-bg.jpg'} alt={item.name} className="h-full w-full object-cover object-center" />
+        <img
+          src={item.img || '/hero-bg.jpg'}
+          alt={item.name}
+          className="h-full w-full object-cover object-center"
+          onError={(e) => { e.target.style.display = 'none'; e.target.nextSibling.style.display = 'flex' }}
+        />
+        <div className="h-full w-full items-center justify-center bg-[#1A1208] text-[#D4AF37]/40" style={{ display: 'none' }}>
+          <span className="text-2xl font-bold">{item.name?.charAt(0)}</span>
+        </div>
         <div className="absolute left-1.5 top-1.5 flex h-5 w-5 items-center justify-center rounded-sm border border-white/20 bg-black/50">
           <span className={`h-3 w-3 rounded-sm ${isVegItem(item) ? 'bg-veg' : 'bg-red-urgent'}`}></span>
         </div>
@@ -295,11 +303,11 @@ export default function Home() {
                   </Link>
                 </div>
 
-                <div className="mt-10 grid grid-cols-2 gap-x-5 gap-y-5">
+                <div className="mt-10 grid grid-cols-3 gap-x-4 gap-y-5">
                   {stats.map((stat) => (
                     <div key={stat.label} className="text-center">
-                      <p className="text-[22px] font-black text-[#E8C84A]">{stat.value}</p>
-                      <p className="mt-1 text-[10px] font-bold uppercase tracking-[2px] text-white/60">{stat.label}</p>
+                      <p className="text-[18px] font-black text-[#E8C84A]">{stat.value}</p>
+                      <p className="mt-1 text-[9px] font-bold uppercase tracking-[1.5px] text-white/60">{stat.label}</p>
                     </div>
                   ))}
                 </div>
@@ -405,8 +413,8 @@ export default function Home() {
                 <h2 className="section-title-treatment text-left">Best Sellers</h2>
                 <p className="mt-4 max-w-2xl text-sm leading-7 text-[#E5D8BC]/78">
                   {hasBestSellers
-                    ? 'Fast-moving dishes customers keep coming back for, presented with quicker actions and cleaner card layouts.'
-                    : 'Our top menu picks with quicker actions and cleaner card layouts, ready for faster ordering.'}
+                    ? 'Our most loved dishes, ordered again and again by our guests.'
+                    : 'Our most loved dishes, ordered again and again by our guests.'}
                 </p>
               </div>
               <Link

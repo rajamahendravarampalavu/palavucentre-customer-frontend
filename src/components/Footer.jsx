@@ -204,7 +204,7 @@ export default function Footer() {
           </div>
         </div>
 
-        <div className="bg-bg-section -mx-4 px-4 py-7 text-center text-text-dim text-sm mt-10 pt-8 border-t border-gold/25">
+        <div className="bg-bg-section -mx-4 px-4 py-7 text-center text-text-dim text-sm mt-10 pt-8 border-t border-gold/25 whitespace-normal overflow-visible">
           <p className="flex items-center justify-center gap-1.5 text-[13px] text-text-secondary">
             Made with <span className="text-red-500">&hearts;</span> by
             <a href="https://staffarc.in" target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1.5 font-semibold text-[#F97316] hover:underline">

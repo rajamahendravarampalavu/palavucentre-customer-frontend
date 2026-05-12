@@ -105,7 +105,7 @@ export default function Reviews() {
           <label
             key={star}
             htmlFor={`rating-${star}`}
-            className="cursor-pointer rounded-md p-1 transition hover:scale-105 focus-within:outline focus-within:outline-2 focus-within:outline-gold/60"
+            className="cursor-pointer rounded-md p-1 transition hover:scale-125 focus-within:outline focus-within:outline-2 focus-within:outline-gold/60"
             aria-label={`Set rating to ${star} star${star > 1 ? 's' : ''}`}
           >
             <input
@@ -118,7 +118,7 @@ export default function Reviews() {
               className="sr-only"
             />
             <svg
-              className={`h-7 w-7 ${star <= rating ? 'text-[#D6B154]' : 'text-[#5C4F35]'}`}
+              className={`h-7 w-7 transition-all ${star <= rating ? 'text-[#F0A500] drop-shadow-[0_0_4px_rgba(240,165,0,0.4)]' : 'text-[#5C4F35]/40'}`}
               fill="currentColor"
               viewBox="0 0 20 20"
             >
@@ -127,6 +127,11 @@ export default function Reviews() {
           </label>
         ))}
       </div>
+      {rating > 0 && (
+        <p className="mt-1 text-[11px] text-gold/70">
+          {['', 'Poor', 'Fair', 'Good', 'Very Good', 'Excellent'][rating]}
+        </p>
+      )}
     </fieldset>
   )
 
