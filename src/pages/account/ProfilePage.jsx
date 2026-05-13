@@ -142,21 +142,8 @@ function OrderCard({ order, onReorder, showReorder = false, showTrack = false, i
       </div>
 
       {showTrack && isLive && isTracking && (
-        <div className="mt-3 rounded-lg border border-white/8 bg-white/[0.02] p-3">
-          <div className="space-y-2">
-            {steps.map((step, i) => (
-              <div key={step.id} className="flex items-start gap-3">
-                <div className="flex flex-col items-center">
-                  <span className={`h-2.5 w-2.5 rounded-full ${step.active ? 'bg-gold animate-pulse' : step.completed ? 'bg-emerald-400' : 'bg-white/15'}`} />
-                  {i < steps.length - 1 && <span className={`mt-0.5 h-5 w-px ${step.completed ? 'bg-emerald-400/40' : 'bg-white/10'}`} />}
-                </div>
-                <div className="-mt-0.5">
-                  <p className={`text-[12px] font-medium ${step.active ? 'text-gold' : step.completed ? 'text-[#F8F1DE]' : 'text-[#A8977E]/50'}`}>{step.label}</p>
-                  <p className="text-[11px] text-[#A8977E]/60">{step.note}</p>
-                </div>
-              </div>
-            ))}
-          </div>
+        <div className="mt-3">
+          <OrderTracker orderStatus={order.orderStatus} cancelledAt={order.cancelledAt} />
         </div>
       )}
     </article>
