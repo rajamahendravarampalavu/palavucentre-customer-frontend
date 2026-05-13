@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
+import { io } from 'socket.io-client'
 import {
   CalendarDays,
   CheckCircle2,
@@ -26,6 +27,7 @@ import { Link, useLocation, useSearchParams } from 'react-router-dom'
 import { useAccount } from '../../context/AccountContext'
 import { useCart } from '../../context/CartContext'
 import { accountApi } from '../../lib/api'
+import { API_BASE_URL } from '../../lib/api-config'
 import { formatCurrency, formatDate, formatDateTime, normalizePhoneNumber } from '../../lib/formatters'
 
 const initialAddressForm = {
@@ -200,6 +202,15 @@ export default function ProfilePage() {
     const t = window.setTimeout(() => setDashboardNotice(''), 2800)
     return () => window.clearTimeout(t)
   }, [dashboardNotice])
+
+  useEffect(() => {
+    if (!user?.id) return
+    const wsUrl = API_BASE_URL.replace('/api', '')
+    const socket = io(wsUrl, { path: '/ws', withCredentials: true })
+    socket.emit('join-user', user.id)
+    socket.on('order-status-changed', () => refreshProfile())
+    return () => socket.disconnect()
+  }, [user?.id, refreshProfile])
 
   const setActiveTab = (tab) => {
     setSearchParams({ tab })
