@@ -128,11 +128,6 @@ function OrderCard({ order, onReorder, showReorder = false, showTrack = false, i
           {isLive ? <><span className="h-1.5 w-1.5 rounded-full bg-emerald-400 animate-pulse" /> Live</> : 'Completed'}
         </p>
         <div className="flex items-center gap-2">
-          {showTrack && isLive && (
-            <button type="button" onClick={onTrackToggle} className="h-7 rounded-md border border-gold/25 px-3 text-[11px] font-medium text-gold transition hover:bg-gold/10">
-              {isTracking ? 'Hide' : 'Track'}
-            </button>
-          )}
           {showReorder && (
             <button type="button" onClick={() => onReorder(order)} className="h-7 rounded-md border border-gold/25 px-3 text-[11px] font-medium text-gold transition hover:bg-gold/10 flex items-center gap-1">
               <RotateCcw className="h-3 w-3" /> Reorder
@@ -141,7 +136,7 @@ function OrderCard({ order, onReorder, showReorder = false, showTrack = false, i
         </div>
       </div>
 
-      {showTrack && isLive && isTracking && (
+      {isLive && (
         <div className="mt-3">
           <OrderTracker orderStatus={order.orderStatus} cancelledAt={order.cancelledAt} />
         </div>
