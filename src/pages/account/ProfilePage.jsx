@@ -29,6 +29,8 @@ import { useCart } from '../../context/CartContext'
 import { accountApi } from '../../lib/api'
 import { API_BASE_URL } from '../../lib/api-config'
 import { formatCurrency, formatDate, formatDateTime, normalizePhoneNumber } from '../../lib/formatters'
+import OrderTracker from '../../components/OrderTracker'
+import OrderToast from '../../components/OrderToast'
 
 const initialAddressForm = {
   label: '', recipientName: '', phone: '', addressLine1: '', addressLine2: '',
@@ -177,6 +179,7 @@ export default function ProfilePage() {
   const [isAddressBusy, setIsAddressBusy] = useState(false)
   const [deleteBusyId, setDeleteBusyId] = useState(null)
   const [showAddressForm, setShowAddressForm] = useState(false)
+  const [orderToast, setOrderToast] = useState(null)
 
   const addresses = useMemo(() => profile?.addresses || [], [profile?.addresses])
   const orders = useMemo(() => profile?.orders || [], [profile?.orders])
@@ -208,7 +211,10 @@ export default function ProfilePage() {
     const wsUrl = API_BASE_URL.startsWith('http') ? API_BASE_URL.replace(/\/api$/, '') : `${window.location.protocol}//${window.location.host}`
     const socket = io(wsUrl, { path: '/ws/', withCredentials: true, transports: ['websocket', 'polling'] })
     socket.on('connect', () => socket.emit('join-user', user.id))
-    socket.on('order-status-changed', () => refreshProfile())
+    socket.on('order-status-changed', (data) => {
+      refreshProfile()
+      setOrderToast(data)
+    })
     return () => socket.disconnect()
   }, [user?.id, refreshProfile])
 
@@ -262,6 +268,7 @@ export default function ProfilePage() {
 
   return (
     <div className="min-h-screen bg-bg-page px-3 pb-12 pt-20 sm:px-4 sm:pt-24">
+      {orderToast && <OrderToast status={orderToast.orderStatus} orderNumber={orderToast.orderNumber} onDismiss={() => setOrderToast(null)} />}
       <div className="mx-auto w-full max-w-[960px]">
 
         {/* Notices */}
